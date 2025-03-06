@@ -1,22 +1,60 @@
-import { React, useState } from "react";
+"use client"
+
+import { useState } from "react"
 import Logo from "../assets/images/logo.jpeg"
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Check, X } from "lucide-react"
 
 export default function SignUp() {
-    const [gender, setGender] = useState("");
-    const [graduationYear, setGraduationYear] = useState("");
-    const [school, setSchool] = useState("");
-    const [course, setCourse] = useState("");
+    const [gender, setGender] = useState("")
+    const [graduationYear, setGraduationYear] = useState("")
+    const [school, setSchool] = useState("")
+    const [course, setCourse] = useState("")
+
+    // Form fields state
+    const [firstName, setFirstName] = useState("")
+    const [middleName, setMiddleName] = useState("")
+    const [lastName, setLastName] = useState("")
+    const [email, setEmail] = useState("")
+    const [dob, setDob] = useState("")
+    const [phone, setPhone] = useState("")
+    const [matricNo, setMatricNo] = useState("")
+    const [bursaryAccount, setBursaryAccount] = useState("")
+
+    // Password states
+    const [password, setPassword] = useState("")
+    const [confirmPassword, setConfirmPassword] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    // Check if passwords match
+    const passwordsMatch = password === confirmPassword && confirmPassword !== ""
+
+    // Check if form is complete
+    const isFormComplete =
+        firstName &&
+        lastName &&
+        email &&
+        dob &&
+        gender &&
+        phone &&
+        matricNo &&
+        graduationYear &&
+        school &&
+        course &&
+        bursaryAccount &&
+        password &&
+        confirmPassword &&
+        passwordsMatch
 
     return (
-        <body className="bg-[#FFFDFF] mx-3">
+        <div className="bg-[#FFFDFF] mx-3">
             <div className="mx-auto max-w-sm lg:max-w-xl mt-5">
                 <div className="flex justify-between">
                     <div className="leading-tight border-l-2 border-[#1E3376] pl-2">
                         <p className="uppercase text-[#2C50C0]">student </p>
                         <span className="text-[#111B37]">Registration</span>
                     </div>
-                    <img src={Logo} alt="babcock logo" className="w-10" />
+                    <img src={Logo || "/placeholder.svg"} alt="babcock logo" className="w-10" />
                 </div>
 
                 <form className="flex-col flex font-lexend mt-5">
@@ -24,174 +62,309 @@ export default function SignUp() {
                         <div className="">
                             {/* First Name Input */}
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="FirstName" className="text-sm">First Name</label>
+                                <label htmlFor="FirstName" className="text-sm">
+                                    First Name
+                                </label>
                                 <input
                                     type="text"
-                                    className="form-control outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
+                                    className="form-control text-sm outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
                                     id="firstname"
+                                    value={firstName}
+                                    onChange={(e) => setFirstName(e.target.value)}
                                     required
                                 />
                             </div>
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="MiddleName" className="text-sm">Middle Name</label>
+                                <label htmlFor="MiddleName" className="text-sm">
+                                    Middle Name
+                                </label>
                                 <input
                                     type="text"
-                                    className="form-control outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
+                                    className="form-control text-sm outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
                                     id="middlename"
-                                    required
+                                    value={middleName}
+                                    onChange={(e) => setMiddleName(e.target.value)}
                                 />
                             </div>
                             {/* Last Name Input */}
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="lastname" className="text-sm">Last Name</label>
+                                <label htmlFor="lastname" className="text-sm">
+                                    Last Name
+                                </label>
                                 <input
                                     type="text"
-                                    className="form-control outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
+                                    className="form-control text-sm outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
                                     id="lastname"
+                                    value={lastName}
+                                    onChange={(e) => setLastName(e.target.value)}
                                     required
                                 />
                             </div>
 
                             {/* Email Input */}
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="email" className="text-sm">Student Email</label>
+                                <label htmlFor="email" className="text-sm">
+                                    Student Email
+                                </label>
                                 <input
                                     type="email"
-                                    className="form-control rounded-lg pl-2 py-1 border-[1px] border-[#AAACAD] outline-none"
+                                    className="form-control text-sm rounded-lg pl-2 py-1 border-[1px] border-[#AAACAD] outline-none"
                                     id="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     required
                                 />
                             </div>
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="date" className="text-sm">Date of birth</label>
+                                <label htmlFor="date" className="text-sm">
+                                    Date of birth
+                                </label>
                                 <input
                                     type="date"
-                                    className="form-control rounded-lg px-5 py-1 border-[1px] border-[#AAACAD] outline-none"
+                                    className="form-control text-sm rounded-lg pl-2 py-1 border-[1px] border-[#AAACAD] outline-none"
                                     id="date"
+                                    value={dob}
+                                    onChange={(e) => setDob(e.target.value)}
                                     required
                                 />
                             </div>
 
                             {/* Gender Dropdown */}
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="gender" className="text-sm">Gender</label>
+                                <label htmlFor="gender" className="text-sm">
+                                    Gender
+                                </label>
                                 <select
                                     name="Gender"
                                     id="gender"
-                                    className={`rounded-lg outline-none text-sm border-[1px] border-[#AAACAD] py-2 px-3 appearance-none 
-                     ${gender ? "text-black" : "text-gray-400"}`}
+                                    className="rounded-lg outline-none text-sm border-[1px] border-[#AAACAD] py-2 px-3 appearance-none"
+                                    style={{ color: gender ? "black" : "#6B7280" }}
                                     value={gender}
                                     onChange={(e) => setGender(e.target.value)}
+                                    required
                                 >
-                                    <option value="" disabled hidden>Select your gender</option>
-                                    <option value="Female" className="text-black">Female</option>
-                                    <option value="Male" className="text-black">Male</option>
+                                    <option value="" disabled hidden style={{ color: "#6B7280" }}>
+                                        Select your gender
+                                    </option>
+                                    <option value="Female" style={{ color: "black" }}>
+                                        Female
+                                    </option>
+                                    <option value="Male" style={{ color: "black" }}>
+                                        Male
+                                    </option>
                                 </select>
                             </div>
 
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="PhoneNo" className="text-sm">Phone Number</label>
-                                <input type="tel"
+                                <label htmlFor="PhoneNo" className="text-sm">
+                                    Phone Number
+                                </label>
+                                <input
+                                    type="tel"
                                     className="form-control outline-none rounded-lg px-1 py-1 border-[1px] border-[#AAACAD]"
                                     id="phoneNo"
-                                    required />
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    required
+                                />
                             </div>
                         </div>
 
                         <div className="">
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="MatricNo" className="text-sm">Matric Number</label>
-                                <input type="text"
-                                    className="form-control outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
+                                <label htmlFor="MatricNo" className="text-sm">
+                                    Matric Number
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control text-sm outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
                                     id="MatricNo"
-                                    required />
+                                    value={matricNo}
+                                    onChange={(e) => setMatricNo(e.target.value)}
+                                    required
+                                />
                             </div>
 
                             {/* Graduation year*/}
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="gender" className="text-sm">Graduation year</label>
+                                <label htmlFor="graduationYear" className="text-sm">
+                                    Graduation year
+                                </label>
                                 <select
                                     name="GraduationYear"
                                     id="GraduationYear"
-                                    className={`rounded-lg outline-none text-sm border-[1px] border-[#AAACAD] py-2 px-3 appearance-none 
-                             ${graduationYear ? "text-black" : "text-gray-400"}`}
+                                    className="rounded-lg outline-none text-sm border-[1px] border-[#AAACAD] py-2 px-3 appearance-none"
+                                    style={{ color: graduationYear ? "black" : "#6B7280" }}
                                     value={graduationYear}
                                     onChange={(e) => setGraduationYear(e.target.value)}
+                                    required
                                 >
-                                    <option value="" disabled hidden>Select your graduation year</option>
-                                    <option value="2025" className="text-black">2025</option>
-                                    <option value="2024" className="text-black">2024</option>
-                                    <option value="2023" className="text-black">2023</option>
-                                    <option value="2022" className="text-black">2022</option>
-                                    <option value="2021" className="text-black">2021</option>
+                                    <option value="" disabled hidden style={{ color: "#6B7280" }}>
+                                        Select your graduation year
+                                    </option>
+                                    <option value="2025" style={{ color: "black" }}>
+                                        2025
+                                    </option>
+                                    <option value="2024" style={{ color: "black" }}>
+                                        2024
+                                    </option>
+                                    <option value="2023" style={{ color: "black" }}>
+                                        2023
+                                    </option>
+                                    <option value="2022" style={{ color: "black" }}>
+                                        2022
+                                    </option>
+                                    <option value="2021" style={{ color: "black" }}>
+                                        2021
+                                    </option>
                                 </select>
                             </div>
 
                             {/* school Dropdown */}
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="degree" className="text-sm">Department</label>
+                                <label htmlFor="degree" className="text-sm">
+                                    Department
+                                </label>
                                 <select
                                     name="Degree"
                                     id="degree"
-                                    className={`rounded-lg border-[1px] text-sm outline-none border-[#AAACAD] py-2 px-3  appearance-none
-                      ${school ? "text-black" : "text-gray-400"}`}
+                                    className="rounded-lg border-[1px] text-sm outline-none border-[#AAACAD] py-2 px-3 appearance-none"
+                                    style={{ color: school ? "black" : "#6B7280" }}
                                     value={school}
                                     onChange={(e) => setSchool(e.target.value)}
+                                    required
                                 >
-                                    <option value="" disabled hidden>Select your school/faculty</option>
-                                    <option value="B.Sc" className="text-black">Bachelor of Science (B.Sc)</option>
-                                    <option value="B.Eng" className="text-black">Bachelor of Engineering (B.Eng)</option>
+                                    <option value="" disabled hidden style={{ color: "#6B7280" }}>
+                                        Select your school/faculty
+                                    </option>
+                                    <option value="B.Sc" style={{ color: "black" }}>
+                                        Bachelor of Science (B.Sc)
+                                    </option>
+                                    <option value="B.Eng" style={{ color: "black" }}>
+                                        Bachelor of Engineering (B.Eng)
+                                    </option>
                                 </select>
                             </div>
 
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="course" className="text-sm">Course</label>
+                                <label htmlFor="course" className="text-sm">
+                                    Course
+                                </label>
                                 <select
                                     name="course"
                                     id="course"
-                                    className={`rounded-lg border-[1px] text-sm outline-none border-[#AAACAD] py-2 px-3 appearance-none
-                     ${course ? "text-black" : "text-gray-400"}`}
+                                    className="rounded-lg border-[1px] text-sm outline-none border-[#AAACAD] py-2 px-3 appearance-none"
+                                    style={{ color: course ? "black" : "#6B7280" }}
                                     value={course}
                                     onChange={(e) => setCourse(e.target.value)}
+                                    required
                                 >
-                                    <option value="" disabled hidden>Select your school/faculty</option>
-                                    <option value="B.Sc" className="text-black">Bachelor of Science (B.Sc)</option>
-                                    <option value="B.Eng" className="text-black">Bachelor of Engineering (B.Eng)</option>
+                                    <option value="" disabled hidden style={{ color: "#6B7280" }}>
+                                        Select your course
+                                    </option>
+                                    <option value="B.Sc" style={{ color: "black" }}>
+                                        Bachelor of Science (B.Sc)
+                                    </option>
+                                    <option value="B.Eng" style={{ color: "black" }}>
+                                        Bachelor of Engineering (B.Eng)
+                                    </option>
                                 </select>
                             </div>
 
                             <div className="mb-3 flex flex-col">
-                                <label htmlFor="banumber" className="text-sm">Bursary Account Number</label>
-                                <input type="text"
-                                    className="form-control outline-none rounded-lg px-1 py-1 border-[1px] border-[#AAACAD]"
+                                <label htmlFor="banumber" className="text-sm">
+                                    Bursary Account Number
+                                </label>
+                                <input
+                                    type="text"
+                                    className="form-control text-sm outline-none rounded-lg px-1 py-1 border-[1px] border-[#AAACAD]"
                                     id="banumber"
-                                    required />
-                            </div>
-
-                            <div className="mb-3 flex flex-col">
-                                <label htmlFor="Password" className="text-sm">Password</label>
-                                <input type="password"
-                                    className="form-control outline-none rounded-lg pl-2 py-1 border-[1px] border-[#AAACAD]"
+                                    value={bursaryAccount}
+                                    onChange={(e) => setBursaryAccount(e.target.value)}
                                     required
                                 />
-
                             </div>
-                            <div className="mb-3 flex flex-col">
-                                <label htmlFor="ConfirmPassword" className="text-sm">Confirm Password</label>
-                                <input type="password"
-                                    className="form-control outline-none rounded-lg pl-2 py-1 border-[1px] border-[#AAACAD]"
-                                    required
-                                />
 
+                            {/* Password Input with Validation */}
+                            <div className="mb-3 flex flex-col">
+                                <label htmlFor="Password" className="text-sm">
+                                    Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        className="form-control text-sm w-full outline-none rounded-lg pl-2 py-1 pr-10 border-[1px] border-[#AAACAD]"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        autoComplete="new-password"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        tabIndex="-1"
+                                    >
+                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Confirm Password Input */}
+                            <div className="mb-3 flex flex-col">
+                                <label htmlFor="ConfirmPassword" className="text-sm">
+                                    Confirm Password
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        className={`form-control text-sm w-full outline-none rounded-lg pl-2 py-1 pr-10 border-[1px] 
+                                        ${confirmPassword && !passwordsMatch ? "border-red-500" : confirmPassword && passwordsMatch ? "border-green-500" : "border-[#AAACAD]"}`}
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        required
+                                        autoComplete="new-password"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        tabIndex="-1"
+                                    >
+                                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                </div>
+
+                                {/* Password match indicator */}
+                                {confirmPassword && (
+                                    <div className="mt-1 flex items-center text-xs">
+                                        {passwordsMatch ? (
+                                            <>
+                                                <Check className="h-4 w-4 text-green-500 mr-1" />
+                                                <span className="text-green-500">Passwords match</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <X className="h-4 w-4 text-red-500 mr-1" />
+                                                <span className="text-red-500">Passwords do not match</span>
+                                            </>
+                                        )}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
                     <div>
-                        <button className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs capitalize text-white mt-3 hover:bg-[#436adf]">register student</button>
+                        <button
+                            type="submit"
+                            className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs capitalize text-white mt-3 hover:bg-[#436adf]"
+                        >
+                            register student
+                        </button>
                     </div>
                 </form>
             </div>
-        </body>
-
-    );
+        </div>
+    )
 }
+
