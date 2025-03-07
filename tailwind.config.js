@@ -8,6 +8,7 @@ export default {
     extend: {
       fontFamily: {
         'lexend': ['Lexend', 'sans-serif'],
+        'questrial': ['Questrial', 'sans-serif'],
       },
     },
   },

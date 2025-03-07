@@ -1,8 +1,7 @@
-"use client"
-
 import { useState } from "react"
 import Logo from "../assets/images/logo.jpeg"
 import { Eye, EyeOff, Check, X } from "lucide-react"
+import { Link } from 'react-router-dom'
 
 export default function SignUp() {
     const [gender, setGender] = useState("")
@@ -54,12 +53,12 @@ export default function SignUp() {
                         <p className="uppercase text-[#2C50C0]">student </p>
                         <span className="text-[#111B37]">Registration</span>
                     </div>
-                    <img src={Logo || "/placeholder.svg"} alt="babcock logo" className="w-10" />
+                    <img src={Logo} alt="babcock logo" className="w-10" />
                 </div>
 
                 <form className="flex-col flex font-lexend mt-5">
                     <div className="flex-col flex md:flex-row md:gap-5 justify-between">
-                        <div className="">
+                        <div>
                             {/* First Name Input */}
                             <div className="mb-3 flex flex-col">
                                 <label htmlFor="FirstName" className="text-sm">
@@ -355,12 +354,15 @@ export default function SignUp() {
                         </div>
                     </div>
                     <div>
-                        <button
-                            type="submit"
-                            className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs capitalize text-white mt-3 hover:bg-[#436adf]"
-                        >
-                            register student
-                        </button>
+                        <Link to="/login">
+                            <button
+                                type="submit"
+                                className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs capitalize text-white mt-3 hover:bg-[#436adf]"
+                            >
+                                register student
+                            </button>
+                        </Link>
+
                     </div>
                 </form>
             </div>
