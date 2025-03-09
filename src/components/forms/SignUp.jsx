@@ -1,5 +1,5 @@
 import { useState } from "react"
-import Logo from "../assets/images/logo.jpeg"
+import Logo from "../../assets/images/logo.jpeg"
 import { Eye, EyeOff, Check, X } from "lucide-react"
 import { Link } from 'react-router-dom'
 

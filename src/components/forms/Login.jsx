@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import Logo from "../assets/images/logo.jpeg"
+import Logo from "../../assets/images/logo.jpeg"
 import { Eye, EyeOff } from 'lucide-react'
 const Login = () => {
     const [password, setPassword] = useState("")
