@@ -1,28 +1,58 @@
-import { useState } from "react"
+"use client"
+
+import { useState, useEffect } from "react"
 import { RefreshCcw, User, Clock, CheckCircle, AlertCircle } from "lucide-react"
 
+// Initial data with "--" as default status
 const initialClearanceData = [
-  { id: "1", office: "Head of Department", status: "Pending", lastUpdated: new Date() },
-  { id: "2", office: "Bursary", status: "Cleared", lastUpdated: new Date() },
-  { id: "3", office: "Library", status: "Pending", lastUpdated: new Date() },
-  { id: "4", office: "Bookshop", status: "Cleared", lastUpdated: new Date() },
-  { id: "5", office: "E.G WHITE", status: "Pending", lastUpdated: new Date() },
-  { id: "6", office: "BUTH", status: "Pending", lastUpdated: new Date() },
-  { id: "7", office: "ALumni", status: "Pending", lastUpdated: new Date() },
-  { id: "8", office: "Security Office", status: "Pending", lastUpdated: new Date() },
-  { id: "9", office: "Security Office", status: "Pending", lastUpdated: new Date() },
-  { id: "10", office: "VPSD", status: "Pending", lastUpdated: new Date() },
-  { id: "11", office: "School Officer", status: "Pending", lastUpdated: new Date() },
-  { id: "12", office: "Registrar", status: "Pending", lastUpdated: new Date() },
+  { id: "1", office: "Head of Department", status: "--", lastUpdated: new Date() },
+  { id: "2", office: "Bursary", status: "--", lastUpdated: new Date() },
+  { id: "3", office: "Library", status: "--", lastUpdated: new Date() },
+  { id: "4", office: "Bookshop", status: "--", lastUpdated: new Date() },
+  { id: "5", office: "E.G WHITE", status: "--", lastUpdated: new Date() },
+  { id: "6", office: "BUTH", status: "--", lastUpdated: new Date() },
+  { id: "7", office: "Alumni", status: "--", lastUpdated: new Date() },
+  { id: "8", office: "Security", status: "--", lastUpdated: new Date() },
+  { id: "9", office: "VPSD", status: "--", lastUpdated: new Date() },
+  { id: "10", office: "School Officer", status: "--", lastUpdated: new Date() },
+  { id: "11", office: "Registrar", status: "--", lastUpdated: new Date() },
 ]
 
-export default function ClearanceDashboard() {
+export default function ClearanceDashboard({ userData = null }) {
+  // Default user data if none is provided from database
+  const [user, setUser] = useState(userData || { name: "Ronald Richards", id: "STD12345" })
   const [clearanceData, setClearanceData] = useState(initialClearanceData)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [lastRefreshed, setLastRefreshed] = useState(new Date())
   const [tooltipVisible, setTooltipVisible] = useState({})
 
-  // Calculate progress percentage
+  // Simulate fetching user data from database
+  useEffect(() => {
+    // This would be replaced with an actual API call
+    const fetchUserData = async () => {
+      try {
+        // Simulating API delay
+        await new Promise((resolve) => setTimeout(resolve, 500))
+
+        // If userData prop is not provided, we could fetch from an API here
+        if (!userData) {
+          // Simulated database response
+          const mockDatabaseResponse = {
+            name: "Ronald Richards",
+            id: "STD12345",
+            email: "ronald.richards@example.edu",
+          }
+          setUser(mockDatabaseResponse)
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+      }
+    }
+
+    fetchUserData()
+  }, [userData])
+
+  // Calculate progress percentage - only count items that are "Cleared"
   const clearedCount = clearanceData.filter((item) => item.status === "Cleared").length
   const progressPercentage = Math.round((clearedCount / clearanceData.length) * 100)
 
@@ -40,13 +70,13 @@ export default function ClearanceDashboard() {
   const handleRequestAll = () => {
     setClearanceData((prevData) =>
       prevData.map((item) =>
-        item.status === "Pending" ? { ...item, status: "Processing", lastUpdated: new Date() } : item,
+        item.status === "--" ? { ...item, status: "Processing", lastUpdated: new Date() } : item,
       ),
     )
 
     // Simulate processing time for each item
     clearanceData.forEach((item, index) => {
-      if (item.status === "Pending") {
+      if (item.status === "--") {
         setTimeout(
           () => {
             setClearanceData((prevData) => {
@@ -102,12 +132,10 @@ export default function ClearanceDashboard() {
       case "Cleared":
         return <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-500 text-white">Cleared</span>
       case "Processing":
-        return <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-500 text-white">Processing</span>
+        return <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-500 text-white">Pending</span>
       default:
         return (
-          <span className="px-2 py-1 text-xs font-medium rounded-full border border-yellow-600 text-yellow-600">
-            Pending
-          </span>
+          <span className="px-2 py-1 text-xs font-medium rounded-full border border-gray-400 text-gray-500">--</span>
         )
     }
   }
@@ -126,7 +154,10 @@ export default function ClearanceDashboard() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <h2 className="text-xl font-semibold">Student Dashboard</h2>
             <div className="flex items-center space-x-3">
-              <span className="text-gray-700 font-medium">Welcome, Ronald Richards</span>
+              <div className="text-right">
+                <span className="text-gray-700 font-medium block">Welcome, {user.name}</span>
+                <span className="text-gray-500 text-sm">{user.id}</span>
+              </div>
               <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
                 <User className="h-6 w-6 text-gray-600" />
               </div>
@@ -163,9 +194,9 @@ export default function ClearanceDashboard() {
                 {isRefreshing ? "Refreshing..." : "Refresh List"}
               </button>
               <button
-                className={`px-4 py-2 rounded-lg bg-blue-900 text-white w-full sm:w-auto ${clearanceData.every((item) => item.status !== "Pending") ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"}`}
+                className={`px-4 py-2 rounded-lg bg-blue-900 text-white w-full sm:w-auto ${clearanceData.every((item) => item.status !== "--") ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"}`}
                 onClick={handleRequestAll}
-                disabled={clearanceData.every((item) => item.status !== "Pending")}
+                disabled={clearanceData.every((item) => item.status !== "--")}
               >
                 Request Clearance (All)
               </button>
@@ -200,7 +231,7 @@ export default function ClearanceDashboard() {
                   <div className="col-span-4 md:col-span-3 text-center">{getStatusBadge(item.status)}</div>
 
                   <div className="col-span-3 text-right px-3">
-                    {item.status === "Pending" ? (
+                    {item.status === "--" ? (
                       <button
                         className="px-3 py-1 text-sm rounded border border-blue-900 text-blue-900 hover:bg-blue-50"
                         onClick={() => handleRequestSingle(item.id)}
