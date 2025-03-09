@@ -52,7 +52,7 @@ const Login = () => {
                                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                 </button>
                             </div>
-                            <p className="text-[10px]">Forgot Password? <span className="text-[#2C50C0]">Click Here.</span></p>
+                            <p className="text-[10px]">Forgot Password? <span className="text-[#2C50C0]">Click Here.</span></p> 
                         </div>
                         <Link to={"/student"}>
                             <button
