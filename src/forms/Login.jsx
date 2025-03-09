@@ -21,44 +21,43 @@ const Login = () => {
                     <h1 className="text-center text-2xl font-light mt-3">Log In</h1>
                 </div>
 
-                {/* <div className="mt-10"><p className="text-xs">Kindly fill in your credentials to access the site.</p></div> */}
-
                 <form>
-                    <div className="flex flex-col space-y-4 mt-5">
+                    <div className="flex flex-col space-y-4 mt-5 font-lexend">
                         <div className="flex flex-col  rounded-md">
-                            <label htmlFor="MatricNo" className="text-xs font-lexend font-light">Matriculation Number
+                            <label htmlFor="MatricNo" className="text-xs font-light">Matriculation Number
                             </label>
                             <input type="text" id="MatricNo" className="border bg-[#EAEAEA] border-[#E4E3E3] rounded-lg outline-none pl-2 pr-16 py-1" required />
                         </div>
                         {/* Password Input with Validation */}
                         <div className="mb-3 flex flex-col">
-                                <label htmlFor="Password" className="text-sm">
-                                    Password
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type={showPassword ? "text" : "password"}
-                                        className="border bg-[#EAEAEA] border-[#E4E3E3] rounded-lg outline-none pl-2 pr-16 py-1"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        required
-                                        autoComplete="new-password"
-                                    />
-                                    <button
-                                        type="button"
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
-                                        onClick={() => setShowPassword(!showPassword)}
-                                        tabIndex="-1"
-                                    >
-                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                                    </button>
-                                </div>
-                                <p className="text-[10px]">Forgot Password? <span className="text-[#2C50C0]">Click Here.</span></p>
+                            <label htmlFor="Password" className="text-xs font-light">
+                                Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type={showPassword ? "text" : "password"}
+                                    className="border bg-[#EAEAEA] border-[#E4E3E3] rounded-lg outline-none pl-2 pr-16 py-1"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    autoComplete="new-password"
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    tabIndex="-1"
+                                >
+                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </button>
                             </div>
-                            <button type="submit"
-                                className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs text-white mt-3 hover:bg-[#436adf]"
-                            >
-                                Login</button>
+                            <p className="text-[10px]">Forgot Password? <span className="text-[#2C50C0]">Click Here.</span></p>
+                        </div>
+                        <button
+                            type="submit"
+                            className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs text-white mt-3 hover:bg-[#436adf]">
+                                Login
+                        </button>
                     </div>
                 </form>
             </div>
