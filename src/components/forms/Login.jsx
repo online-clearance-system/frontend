@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Logo from "../../assets/images/logo.jpeg"
 import { Eye, EyeOff } from 'lucide-react'
+import { Link } from 'react-router-dom'
 const Login = () => {
     const [password, setPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
@@ -53,11 +54,14 @@ const Login = () => {
                             </div>
                             <p className="text-[10px]">Forgot Password? <span className="text-[#2C50C0]">Click Here.</span></p>
                         </div>
-                        <button
-                            type="submit"
-                            className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs text-white mt-3 hover:bg-[#436adf]">
+                        <Link to={"/student"}>
+                            <button
+                                type="submit"
+                                className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs text-white mt-3 hover:bg-[#436adf]">
                                 Login
-                        </button>
+                            </button>
+                        </Link>
+
                     </div>
                 </form>
             </div>
