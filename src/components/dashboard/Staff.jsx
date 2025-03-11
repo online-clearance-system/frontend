@@ -1,26 +1,24 @@
-"use client"
-
 import { useState, useEffect } from "react"
-import { RefreshCcw, User, Clock, CheckCircle, AlertCircle } from "lucide-react"
+import { RefreshCcw, User, CheckCircle, AlertCircle } from "lucide-react"
 
 // Initial data with "--" as default status
 const initialClearanceData = [
-  { id: "1", office: "Head of Department", status: "--", lastUpdated: new Date() },
-  { id: "2", office: "Bursary", status: "--", lastUpdated: new Date() },
-  { id: "3", office: "Library", status: "--", lastUpdated: new Date() },
-  { id: "4", office: "Bookshop", status: "--", lastUpdated: new Date() },
-  { id: "5", office: "E.G WHITE", status: "--", lastUpdated: new Date() },
-  { id: "6", office: "BUTH", status: "--", lastUpdated: new Date() },
-  { id: "7", office: "Alumni", status: "--", lastUpdated: new Date() },
-  { id: "8", office: "Security", status: "--", lastUpdated: new Date() },
-  { id: "9", office: "VPSD", status: "--", lastUpdated: new Date() },
-  { id: "10", office: "School Officer", status: "--", lastUpdated: new Date() },
-  { id: "11", office: "Registrar", status: "--", lastUpdated: new Date() },
+  { id: "1", student: "Stephen Luca", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "2", student: "Ajayi Opemipo Esther", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "3", student: "Emelifonwu William Samuel", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "4", student: "21/0004", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "5", student: "21/0005", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "6", student: "21/0006", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "7", student: "21/0007", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "8", student: "21/0008", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "9", student: "21/0009", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "10", student: "21/0010", status: "--", actionStatus: null, lastUpdated: new Date() },
+  { id: "11", student: "21/0011", status: "--", actionStatus: null, lastUpdated: new Date() },
 ]
 
 export default function ClearanceDashboard({ userData = null }) {
   // Default user data if none is provided from database
-  const [user, setUser] = useState(userData || { name: "Ronald Richards", id: "STD12345" })
+  const [user, setUser] = useState(userData || { name: "Ronald Richards", id: "STF12345" })
   const [clearanceData, setClearanceData] = useState(initialClearanceData)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [lastRefreshed, setLastRefreshed] = useState(new Date())
@@ -39,7 +37,7 @@ export default function ClearanceDashboard({ userData = null }) {
           // Simulated database response
           const mockDatabaseResponse = {
             name: "Ronald Richards",
-            id: "STD12345",
+            id: "STF12345",
             email: "ronald.richards@example.edu",
           }
           setUser(mockDatabaseResponse)
@@ -120,6 +118,22 @@ export default function ClearanceDashboard({ userData = null }) {
     }, 2000)
   }
 
+  const handleApprove = (id) => {
+    setClearanceData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, actionStatus: "approved", status: "Approved", lastUpdated: new Date() } : item,
+      ),
+    )
+  }
+
+  const handleReject = (id) => {
+    setClearanceData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, actionStatus: "rejected", status: "Rejected", lastUpdated: new Date() } : item,
+      ),
+    )
+  }
+
   const formatLastUpdated = (date) => {
     const minutes = Math.round((date.getTime() - new Date().getTime()) / (1000 * 60))
     if (minutes === 0) return "just now"
@@ -129,6 +143,10 @@ export default function ClearanceDashboard({ userData = null }) {
 
   const getStatusBadge = (status) => {
     switch (status) {
+      case "Approved":
+        return <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-600 text-white">Approved</span>
+      case "Rejected":
+        return <span className="px-2 py-1 text-xs font-medium rounded-full bg-red-600 text-white">Rejected</span>
       case "Cleared":
         return <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-600 text-white">Cleared</span>
       case "Processing":
@@ -152,7 +170,7 @@ export default function ClearanceDashboard({ userData = null }) {
       <div className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg">
         <div className="p-4 md:p-6 border-b">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <h2 className="text-xl font-semibold">Student Dashboard</h2>
+            <h2 className="text-xl font-semibold">Staff Dashboard</h2>
             <div className="flex items-center space-x-3">
               <div className="text-right">
                 <span className="text-gray-700 font-medium block">Welcome, {user.name}</span>
@@ -165,23 +183,6 @@ export default function ClearanceDashboard({ userData = null }) {
           </div>
         </div>
         <div className="p-4 md:p-6">
-          <div className="bg-gray-100 p-6 rounded-lg shadow-sm mb-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-              <div className="text-sm font-medium mb-1">Clearance Overview</div>
-              <div className="flex items-center text-sm text-gray-500">
-                <Clock className="mr-1 h-4 w-4" />
-                <span>Last updated: {formatLastUpdated(lastRefreshed)}</span>
-              </div>
-            </div>
-            <div className="relative w-full bg-gray-300 rounded-full h-3">
-              <div
-                className="absolute top-0 left-0 bg-blue-900 h-3 rounded-full transition-all duration-500 ease-in-out"
-                style={{ width: `${progressPercentage}%` }}
-              ></div>
-            </div>
-            <div className="text-right text-sm mt-1 font-medium">Progress: {progressPercentage}%</div>
-          </div>
-
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
             <h3 className="text-lg font-semibold">Clearance Status</h3>
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
@@ -193,33 +194,27 @@ export default function ClearanceDashboard({ userData = null }) {
                 <RefreshCcw className={`mr-2 h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
                 {isRefreshing ? "Refreshing..." : "Refresh List"}
               </button>
-              <button
-                className={`px-4 py-2 rounded-lg bg-blue-900 text-white w-full sm:w-auto ${clearanceData.every((item) => item.status !== "--") ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"}`}
-                onClick={handleRequestAll}
-                disabled={clearanceData.every((item) => item.status !== "--")}
-              >
-                Request Clearance (All)
-              </button>
+              
             </div>
           </div>
 
           <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
             <div className="grid grid-cols-12 font-medium pb-2 mb-2 border-b">
-              <span className="col-span-5 md:col-span-6 text-gray-700">Offices</span>
-              <span className="col-span-4 md:col-span-3 text-gray-700 text-center">Status</span>
-              <span className="col-span-3 text-right text-gray-700">Action</span>
+              <span className="col-span-5 md:col-span-6 text-gray-700">Student</span>
+              <span className="col-span-4 md:col-span-3 text-gray-700 text-center">Action</span>
+              <span className="col-span-3 text-right text-gray-700">Status</span>
             </div>
 
             <div className="space-y-2">
               {clearanceData.map((item) => (
                 <div key={item.id} className="grid grid-cols-12 py-3 bg-white rounded-lg shadow-sm items-center">
-                  <div className="col-span-5 md:col-span-6 font-medium text-blue-900 relative">
+                  <div className="col-span-5 md:col-span-6 font-medium text-gray-700 relative">
                     <span
                       className="cursor-pointer truncate block px-3"
                       onMouseEnter={() => toggleTooltip(item.id)}
                       onMouseLeave={() => toggleTooltip(item.id)}
                     >
-                      {item.office}
+                      {item.student}
                     </span>
                     {tooltipVisible[item.id] && (
                       <div className="absolute z-10 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg -mt-1 ml-4">
@@ -228,28 +223,34 @@ export default function ClearanceDashboard({ userData = null }) {
                     )}
                   </div>
 
-                  <div className="col-span-4 md:col-span-3 text-center">{getStatusBadge(item.status)}</div>
-
-                  <div className="col-span-3 text-right px-3">
-                    {item.status === "--" ? (
-                      <button
-                        className="px-3 py-1 text-sm rounded border border-blue-900 text-blue-900 hover:bg-blue-50"
-                        onClick={() => handleRequestSingle(item.id)}
-                      >
-                        Request
-                      </button>
-                    ) : item.status === "Cleared" ? (
-                      <span className="inline-block text-green-600">
-                        <CheckCircle className="h-5 w-5" />
+                  <div className="col-span-4 md:col-span-3 text-center">
+                    {item.actionStatus === "approved" ? (
+                      <span className="px-3 py-1 text-sm rounded bg-green-600 text-white flex items-center justify-center mx-auto w-24">
+                        <CheckCircle className="h-4 w-4 mr-1" /> Approved
+                      </span>
+                    ) : item.actionStatus === "rejected" ? (
+                      <span className="px-3 py-1 text-sm rounded bg-red-600 text-white flex items-center justify-center mx-auto w-24">
+                        <AlertCircle className="h-4 w-4 mr-1" /> Rejected
                       </span>
                     ) : (
-                      <div className="flex justify-end">
-                        <div className="animate-pulse">
-                          <AlertCircle className="h-5 w-5 text-blue-500" />
-                        </div>
+                      <div className="flex justify-center space-x-2">
+                        <button
+                          className="px-3 py-1 text-sm rounded text-green-600 border-green-600 border-[1px] hover:bg-green-100"
+                          onClick={() => handleApprove(item.id)}
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="px-3 py-1 text-sm rounded text-red-600 border-red-600 border-[1px] hover:bg-red-100"
+                          onClick={() => handleReject(item.id)}
+                        >
+                          Reject
+                        </button>
                       </div>
                     )}
                   </div>
+
+                  <div className="col-span-3 text-right px-3">{getStatusBadge(item.status)}</div>
                 </div>
               ))}
             </div>
