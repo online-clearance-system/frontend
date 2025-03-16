@@ -7,11 +7,13 @@ import EmailSent from './components/forms/EmailSent'
 import Student from '././components/dashboard/Student'
 import Staff from '././components/dashboard/Staff'
 import Admin from '././components/dashboard/Admin'
+import LandingPage from './components/LandingPage'
 
 const App = () => {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/signup" element={<SignUp />} /> 
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />

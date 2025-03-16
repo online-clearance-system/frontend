@@ -219,7 +219,7 @@ const initialActivityData = [
   },
 ]
 
-export default function AdminDashboard({ userData = null }) {
+export default function Admin({ userData = null }) {
   // Default user data if none is provided from database
   const [user, setUser] = useState(userData || { name: "Admin User", id: "ADMIN001", role: "Super Admin" })
   const [staffData, setStaffData] = useState(initialStaffData)
