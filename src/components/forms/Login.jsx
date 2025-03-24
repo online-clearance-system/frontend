@@ -14,7 +14,7 @@ const Login = () => {
                     </div>
                     <div>
                         <h1 className="font-light text-[#1E3376] text-xl px-1 pb-1 border-[#1E3376] border-b-2">Clear<span className="font-medium">up</span></h1>
-                        <h1 className="uppercase text-[#2C50C0] text-xl font-medium">student</h1>
+                        {/* <h1 className="uppercase text-[#2C50C0] text-xl font-medium">student</h1> */}
                     </div>
                 </div>
 
@@ -25,9 +25,9 @@ const Login = () => {
                 <form>
                     <div className="flex flex-col space-y-4 mt-5 font-lexend">
                         <div className="flex flex-col  rounded-md">
-                            <label htmlFor="MatricNo" className="text-xs font-light">Matriculation Number
+                            <label htmlFor="Email" className="text-xs font-light">Email
                             </label>
-                            <input type="text" id="MatricNo" className="border bg-[#EAEAEA] border-[#E4E3E3] rounded-lg outline-none pl-2 pr-16 py-1" required />
+                            <input type="email" id="Email" className="border bg-[#EAEAEA] border-[#E4E3E3] rounded-lg outline-none pl-2 pr-16 py-1" required />
                         </div>
                         {/* Password Input with Validation */}
                         <div className="mb-3 flex flex-col">

@@ -3,46 +3,59 @@
 import { useState, useEffect } from "react"
 import { RefreshCcw, User, Clock, CheckCircle, AlertCircle } from "lucide-react"
 
-// Initial data with "--" as default status
-const initialClearanceData = [
-  { id: "1", office: "Head of Department", status: "--", lastUpdated: new Date() },
-  { id: "2", office: "Bursary", status: "--", lastUpdated: new Date() },
-  { id: "3", office: "Library", status: "--", lastUpdated: new Date() },
-  { id: "4", office: "Bookshop", status: "--", lastUpdated: new Date() },
-  { id: "5", office: "E.G WHITE", status: "--", lastUpdated: new Date() },
-  { id: "6", office: "BUTH", status: "--", lastUpdated: new Date() },
-  { id: "7", office: "Alumni", status: "--", lastUpdated: new Date() },
-  { id: "8", office: "Security", status: "--", lastUpdated: new Date() },
-  { id: "9", office: "VPSD", status: "--", lastUpdated: new Date() },
-  { id: "10", office: "School Officer", status: "--", lastUpdated: new Date() },
-  { id: "11", office: "Registrar", status: "--", lastUpdated: new Date() },
-]
-
 export default function ClearanceDashboard({ userData = null }) {
   // Default user data if none is provided from database
   const [user, setUser] = useState(userData || { name: "Ronald Richards", id: "STD12345" })
-  const [clearanceData, setClearanceData] = useState(initialClearanceData)
+  const [clearanceData, setClearanceData] = useState([])
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [lastRefreshed, setLastRefreshed] = useState(new Date())
   const [tooltipVisible, setTooltipVisible] = useState({})
 
-  // Simulate fetching user data from database
+  // Function to fetch clearance data from API
+  const fetchClearanceData = async () => {
+    setIsLoading(true)
+    try {
+      // Fixed API endpoint to match the route we created
+      const response = await fetch("/api/student/clearance")
+      if (!response.ok) {
+        throw new Error("Failed to fetch clearance data")
+      }
+      const data = await response.json()
+      setClearanceData(data)
+    } catch (error) {
+      console.error("Error fetching clearance data:", error)
+      // Fallback to initial data in case of error to prevent "No clearance data available"
+      setClearanceData([
+        { id: "1", office: "Head of Department", status: "--", lastUpdated: new Date() },
+        { id: "2", office: "Bursary", status: "--", lastUpdated: new Date() },
+        { id: "3", office: "Library", status: "--", lastUpdated: new Date() },
+        { id: "4", office: "Bookshop", status: "--", lastUpdated: new Date() },
+        { id: "5", office: "E.G WHITE", status: "--", lastUpdated: new Date() },
+        { id: "6", office: "BUTH", status: "--", lastUpdated: new Date() },
+        { id: "7", office: "Alumni", status: "--", lastUpdated: new Date() },
+        { id: "8", office: "Security", status: "--", lastUpdated: new Date() },
+        { id: "9", office: "VPSD", status: "--", lastUpdated: new Date() },
+        { id: "10", office: "School Officer", status: "--", lastUpdated: new Date() },
+        { id: "11", office: "Registrar", status: "--", lastUpdated: new Date() },
+      ])
+    } finally {
+      setIsLoading(false)
+      setLastRefreshed(new Date())
+    }
+  }
+
+  // Fetch user data on component mount
   useEffect(() => {
-    // This would be replaced with an actual API call
     const fetchUserData = async () => {
       try {
-        // Simulating API delay
-        await new Promise((resolve) => setTimeout(resolve, 500))
-
-        // If userData prop is not provided, we could fetch from an API here
+        // Replace with your actual user data endpoint
         if (!userData) {
-          // Simulated database response
-          const mockDatabaseResponse = {
-            name: "Ronald Richards",
-            id: "STD12345",
-            email: "ronald.richards@example.edu",
+          const response = await fetch("/api/student/profile")
+          if (response.ok) {
+            const data = await response.json()
+            setUser(data)
           }
-          setUser(mockDatabaseResponse)
         }
       } catch (error) {
         console.error("Error fetching user data:", error)
@@ -50,75 +63,42 @@ export default function ClearanceDashboard({ userData = null }) {
     }
 
     fetchUserData()
+    fetchClearanceData() // Initial data fetch
   }, [userData])
 
   // Calculate progress percentage - only count items that are "Cleared"
   const clearedCount = clearanceData.filter((item) => item.status === "Cleared").length
-  const progressPercentage = Math.round((clearedCount / clearanceData.length) * 100)
+  const progressPercentage = Math.round((clearedCount / clearanceData.length) * 100) || 0
+
+  // Check if all clearances are completed
+  const allClearancesCompleted = clearanceData.length > 0 && clearanceData.every((item) => item.status === "Cleared")
 
   const handleRefresh = () => {
     setIsRefreshing(true)
-
-    // Simulate API call with timeout
-    setTimeout(() => {
-      setClearanceData([...initialClearanceData])
-      setLastRefreshed(new Date())
+    fetchClearanceData().finally(() => {
       setIsRefreshing(false)
-    }, 1000)
-  }
-
-  const handleRequestAll = () => {
-    setClearanceData((prevData) =>
-      prevData.map((item) =>
-        item.status === "--" ? { ...item, status: "Processing", lastUpdated: new Date() } : item,
-      ),
-    )
-
-    // Simulate processing time for each item
-    clearanceData.forEach((item, index) => {
-      if (item.status === "--") {
-        setTimeout(
-          () => {
-            setClearanceData((prevData) => {
-              const newData = [...prevData]
-              const itemIndex = newData.findIndex((i) => i.id === item.id)
-              if (itemIndex !== -1) {
-                newData[itemIndex] = {
-                  ...newData[itemIndex],
-                  status: "Cleared",
-                  lastUpdated: new Date(),
-                }
-              }
-              return newData
-            })
-          },
-          2000 + index * 1000,
-        ) // Stagger the updates
-      }
     })
   }
 
-  const handleRequestSingle = (id) => {
-    setClearanceData((prevData) =>
-      prevData.map((item) => (item.id === id ? { ...item, status: "Processing", lastUpdated: new Date() } : item)),
-    )
-
-    // Simulate processing time
-    setTimeout(() => {
-      setClearanceData((prevData) => {
-        const newData = [...prevData]
-        const itemIndex = newData.findIndex((i) => i.id === id)
-        if (itemIndex !== -1) {
-          newData[itemIndex] = {
-            ...newData[itemIndex],
-            status: "Cleared",
-            lastUpdated: new Date(),
-          }
-        }
-        return newData
+  const handleRequestAll = async () => {
+    try {
+      // endpoint to create a new clearance request
+      const response = await fetch("/api/clearance", {
+        method: "POST",
       })
-    }, 2000)
+
+      if (response.ok) {
+        // Refresh data after a short delay
+        setTimeout(() => {
+          fetchClearanceData()
+        }, 1000)
+      }
+    } catch (error) {
+      console.error("Error requesting clearance:", error)
+    }
   }
+
+  
 
   const formatLastUpdated = (date) => {
     const minutes = Math.round((date.getTime() - new Date().getTime()) / (1000 * 60))
@@ -194,66 +174,66 @@ export default function ClearanceDashboard({ userData = null }) {
                 {isRefreshing ? "Refreshing..." : "Refresh List"}
               </button>
               <button
-                className={`px-4 py-2 rounded-lg bg-blue-900 text-white w-full sm:w-auto ${clearanceData.every((item) => item.status !== "--") ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"}`}
+                className={`px-4 py-2 rounded-lg bg-blue-900 text-white w-full sm:w-auto ${allClearancesCompleted ? "opacity-70 cursor-not-allowed" : "hover:bg-blue-800"}`}
                 onClick={handleRequestAll}
-                disabled={clearanceData.every((item) => item.status !== "--")}
+                disabled={allClearancesCompleted}
               >
-                Request Clearance (All)
+                {allClearancesCompleted ? "All Clearances Completed" : "Request Clearance"}
               </button>
             </div>
           </div>
 
-          <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
-            <div className="grid grid-cols-12 font-medium pb-2 mb-2 border-b">
-              <span className="col-span-5 md:col-span-6 text-gray-700">Offices</span>
-              <span className="col-span-4 md:col-span-3 text-gray-700 text-center">Status</span>
-              <span className="col-span-3 text-right text-gray-700">Action</span>
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-900"></div>
             </div>
+          ) : clearanceData.length === 0 ? (
+            <div className="bg-gray-100 p-8 rounded-lg shadow-sm text-center">
+              <p className="text-gray-500">No clearance data available</p>
+            </div>
+          ) : (
+            <div className="bg-gray-100 p-4 rounded-lg shadow-sm">
+              <div className="grid grid-cols-12 font-medium pb-2 mb-2 border-b">
+                <span className="col-span-6 md:col-span-7 text-gray-700">Offices</span>
+                <span className="col-span-6 md:col-span-5 text-gray-700 text-center">Status</span>
+              </div>
 
-            <div className="space-y-2">
-              {clearanceData.map((item) => (
-                <div key={item.id} className="grid grid-cols-12 py-3 bg-white rounded-lg shadow-sm items-center">
-                  <div className="col-span-5 md:col-span-6 font-medium text-blue-900 relative">
-                    <span
-                      className="cursor-pointer truncate block px-3"
-                      onMouseEnter={() => toggleTooltip(item.id)}
-                      onMouseLeave={() => toggleTooltip(item.id)}
-                    >
-                      {item.office}
-                    </span>
-                    {tooltipVisible[item.id] && (
-                      <div className="absolute z-10 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg -mt-1 ml-4">
-                        Last updated: {item.lastUpdated.toLocaleTimeString()}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="col-span-4 md:col-span-3 text-center">{getStatusBadge(item.status)}</div>
-
-                  <div className="col-span-3 text-right px-3">
-                    {item.status === "--" ? (
-                      <button
-                        className="px-3 py-1 text-sm rounded border border-blue-900 text-blue-900 hover:bg-blue-50"
-                        onClick={() => handleRequestSingle(item.id)}
+              <div className="space-y-2">
+                {clearanceData.map((item) => (
+                  <div key={item.id} className="grid grid-cols-12 py-3 bg-white rounded-lg shadow-sm items-center">
+                    <div className="col-span-6 md:col-span-7 font-medium text-blue-900 relative">
+                      <span
+                        className="cursor-pointer truncate block px-3"
+                        onMouseEnter={() => toggleTooltip(item.id)}
+                        onMouseLeave={() => toggleTooltip(item.id)}
                       >
-                        Request
-                      </button>
-                    ) : item.status === "Cleared" ? (
-                      <span className="inline-block text-green-600">
-                        <CheckCircle className="h-5 w-5" />
+                        {item.office}
                       </span>
-                    ) : (
-                      <div className="flex justify-end">
+                      {tooltipVisible[item.id] && (
+                        <div className="absolute z-10 px-2 py-1 text-xs bg-gray-800 text-white rounded shadow-lg -mt-1 ml-4">
+                          Last updated: {new Date(item.lastUpdated).toLocaleTimeString()}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="col-span-6 md:col-span-5 flex justify-center items-center gap-3">
+                      <div>{getStatusBadge(item.status)}</div>
+                      {item.status === "Cleared" && (
+                        <span className="text-green-600">
+                          <CheckCircle className="h-5 w-5" />
+                        </span>
+                      )}
+                      {item.status === "Processing" && (
                         <div className="animate-pulse">
                           <AlertCircle className="h-5 w-5 text-blue-500" />
                         </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
