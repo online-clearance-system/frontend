@@ -6,9 +6,9 @@ import ForgotPassword from './components/forms/ForgotPassword'
 import EmailSent from './components/forms/EmailSent'
 import Student from '././components/dashboard/Student'
 import Staff from '././components/dashboard/Staff'
-import Admin from '././components/dashboard/Admin'
 import LandingPage from './components/LandingPage'
 import { AuthProvider } from './contexts/AuthContext'
+import Admin from './components/dashboard/ADMIN.JSX'
 
 // Protected route component
 const ProtectedRoute = ({ children, userType }) => {
@@ -40,21 +40,15 @@ const App = () => {
           
           {/* Protected routes */}
           <Route path="/student" element={
-            <ProtectedRoute userType="student">
               <Student />
-            </ProtectedRoute>
           } />
           
           <Route path="/staff" element={
-            <ProtectedRoute userType="staff">
               <Staff />
-            </ProtectedRoute>
           } />
           
           <Route path="/admin" element={
-            <ProtectedRoute userType="admin">
               <Admin />
-            </ProtectedRoute>
           } />
         </Routes>
       </Router>
