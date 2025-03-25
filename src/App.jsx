@@ -8,7 +8,7 @@ import Student from '././components/dashboard/Student'
 import Staff from '././components/dashboard/Staff'
 import LandingPage from './components/LandingPage'
 import { AuthProvider } from './contexts/AuthContext'
-import Admin from './components/dashboard/ADMIN.JSX'
+import Admin from '././components/dashboard/Admin'
 
 // Protected route component
 const ProtectedRoute = ({ children, userType }) => {
@@ -50,7 +50,7 @@ const App = () => {
           <Route path="/admin" element={
               <Admin />
           } />
-        </Routes>
+        </Routes> 
       </Router>
     </AuthProvider>
   )
