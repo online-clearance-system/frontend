@@ -29,7 +29,7 @@ const Login = () => {
             } else if (userType === 'admin') {
                 navigate('/admin');
             } else {
-                navigate('/');
+                navigate('/student');
             }
         } catch (error) {
             setError(error.message || 'Failed to login. Please check your credentials.');
