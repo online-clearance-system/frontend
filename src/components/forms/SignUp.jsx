@@ -1,29 +1,35 @@
 import { useState } from "react"
 import Logo from "../../assets/images/logo.jpeg"
 import { Eye, EyeOff, Check, X } from "lucide-react"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import authService from "../../services/authService"
 
 export default function SignUp() {
-    const [gender, setGender] = useState("")
-    const [graduationYear, setGraduationYear] = useState("")
-    const [school, setSchool] = useState("")
-    const [course, setCourse] = useState("")
+    const navigate = useNavigate();
 
     // Form fields state
+    const [gender, setGender] = useState("")
+    const [gradYear, setGraduationYear] = useState("")
+    const [department, setSchool] = useState("")
+    const [course, setCourse] = useState("")
     const [firstName, setFirstName] = useState("")
     const [middleName, setMiddleName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
     const [dob, setDob] = useState("")
     const [phone, setPhone] = useState("")
-    const [matricNo, setMatricNo] = useState("")
-    const [bursaryAccount, setBursaryAccount] = useState("")
+    const [matric, setMatricNo] = useState("")
+    const [bursaryAcct, setBursaryAccount] = useState("")
 
     // Password states
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    // Form submission states
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
 
     // Check if passwords match
     const passwordsMatch = password === confirmPassword && confirmPassword !== ""
@@ -36,14 +42,52 @@ export default function SignUp() {
         dob &&
         gender &&
         phone &&
-        matricNo &&
-        graduationYear &&
-        school &&
+        matric &&
+        gradYear &&
+        department &&
         course &&
-        bursaryAccount &&
+        bursaryAcct &&
         password &&
         confirmPassword &&
         passwordsMatch
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!isFormComplete) {
+            setError('Please fill all required fields and ensure passwords match.');
+            return;
+        }
+
+        setLoading(true);
+        setError('');
+
+        try {
+            // Create the user data object matching the API schema
+            const userData = {
+                firstName,
+                middleName,
+                lastName,
+                email,
+                dob,
+                gender,
+                phone,
+                matric,
+                gradYear: parseInt(gradYear),
+                course,
+                bursaryAcct,
+                department,
+                password
+            };
+
+            await authService.register(userData);
+            navigate('/login');
+        } catch (error) {
+            setError(error.message || 'Registration failed. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="bg-[#FFFDFF] mx-3">
@@ -56,7 +100,13 @@ export default function SignUp() {
                     <img src={Logo} alt="babcock logo" className="w-10" />
                 </div>
 
-                <form className="flex-col flex font-lexend mt-5">
+                {error && (
+                    <div className="bg-red-50 text-red-700 p-3 rounded-md mt-3 text-sm">
+                        {error}
+                    </div>
+                )}
+
+                <form className="flex-col flex font-lexend mt-5" onSubmit={handleSubmit}>
                     <div className="flex-col flex md:flex-row md:gap-5 justify-between">
                         <div>
                             {/* First Name Input */}
@@ -178,7 +228,7 @@ export default function SignUp() {
                                     type="text"
                                     className="form-control text-sm outline-none rounded-lg pl-2 pr-10 py-1 border-[1px] border-[#AAACAD]"
                                     id="MatricNo"
-                                    value={matricNo}
+                                    value={matric}
                                     onChange={(e) => setMatricNo(e.target.value)}
                                     required
                                 />
@@ -193,8 +243,8 @@ export default function SignUp() {
                                     name="GraduationYear"
                                     id="GraduationYear"
                                     className="rounded-lg outline-none text-sm border-[1px] border-[#AAACAD] py-2 px-3 appearance-none"
-                                    style={{ color: graduationYear ? "black" : "#6B7280" }}
-                                    value={graduationYear}
+                                    style={{ color: gradYear ? "black" : "#6B7280" }}
+                                    value={gradYear}
                                     onChange={(e) => setGraduationYear(e.target.value)}
                                     required
                                 >
@@ -228,8 +278,8 @@ export default function SignUp() {
                                     name="Degree"
                                     id="degree"
                                     className="rounded-lg border-[1px] text-sm outline-none border-[#AAACAD] py-2 px-3 appearance-none"
-                                    style={{ color: school ? "black" : "#6B7280" }}
-                                    value={school}
+                                    style={{ color: department ? "black" : "#6B7280" }}
+                                    value={department}
                                     onChange={(e) => setSchool(e.target.value)}
                                     required
                                 >
@@ -278,7 +328,7 @@ export default function SignUp() {
                                     type="text"
                                     className="form-control text-sm outline-none rounded-lg px-1 py-1 border-[1px] border-[#AAACAD]"
                                     id="banumber"
-                                    value={bursaryAccount}
+                                    value={bursaryAcct}
                                     onChange={(e) => setBursaryAccount(e.target.value)}
                                     required
                                 />
@@ -354,15 +404,17 @@ export default function SignUp() {
                         </div>
                     </div>
                     <div>
-                        <Link to="/login">
-                            <button
-                                type="submit"
-                                className="bg-[#2C50C0] w-full py-2 rounded-lg text-xs capitalize text-white mt-3 hover:bg-[#436adf]"
-                            >
-                                register student
-                            </button>
-                        </Link>
+                        <button
+                            type="submit"
+                            disabled={loading || !isFormComplete}
+                            className={`bg-[#2C50C0] w-full py-2 rounded-lg text-xs capitalize text-white mt-3 hover:bg-[#436adf] ${(loading || !isFormComplete) ? 'opacity-70 cursor-not-allowed' : ''}`}
+                        >
+                            {loading ? 'Registering...' : 'register student'}
+                        </button>
 
+                        <p className="text-center mt-3 text-sm">
+                            Already have an account? <Link to="/login" className="text-blue-600 hover:underline">Login</Link>
+                        </p>
                     </div>
                 </form>
             </div>
