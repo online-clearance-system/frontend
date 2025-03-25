@@ -284,13 +284,16 @@ export default function SignUp() {
                                     required
                                 >
                                     <option value="" disabled hidden style={{ color: "#6B7280" }}>
-                                        Select your school/faculty
+                                        Select your department
                                     </option>
                                     <option value="B.Sc" style={{ color: "black" }}>
-                                        Bachelor of Science (B.Sc)
+                                      Computer Science
                                     </option>
                                     <option value="B.Eng" style={{ color: "black" }}>
-                                        Bachelor of Engineering (B.Eng)
+                                        Information Technology
+                                    </option>
+                                    <option value="B.Eng" style={{ color: "black" }}>
+                                        Software Engineering
                                     </option>
                                 </select>
                             </div>
@@ -312,10 +315,19 @@ export default function SignUp() {
                                         Select your course
                                     </option>
                                     <option value="B.Sc" style={{ color: "black" }}>
-                                        Bachelor of Science (B.Sc)
+                                        Computer Science
                                     </option>
                                     <option value="B.Eng" style={{ color: "black" }}>
-                                        Bachelor of Engineering (B.Eng)
+                                        Computer Information Systems
+                                    </option>
+                                    <option value="B.Eng" style={{ color: "black" }}>
+                                        Computer Science (Technology)
+                                    </option>
+                                    <option value="B.Eng" style={{ color: "black" }}>
+                                        Information Technology
+                                    </option>
+                                    <option value="B.Eng" style={{ color: "black" }}>
+                                        Software Engineering
                                     </option>
                                 </select>
                             </div>

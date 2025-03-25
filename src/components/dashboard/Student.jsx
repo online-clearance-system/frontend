@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { RefreshCcw, User, Clock, CheckCircle, AlertCircle } from "lucide-react"
 
@@ -16,8 +14,8 @@ export default function ClearanceDashboard({ userData = null }) {
   const fetchClearanceData = async () => {
     setIsLoading(true)
     try {
-      // Fixed API endpoint to match the route we created
-      const response = await fetch("/api/student/clearance")
+      // Fixed API endpoint to match the route created
+      const response = await fetch("/api/clearance")
       if (!response.ok) {
         throw new Error("Failed to fetch clearance data")
       }

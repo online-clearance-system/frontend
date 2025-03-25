@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { RefreshCcw, User, CheckCircle, AlertCircle, LogOut, Check, X, AlertTriangle, Clock } from "lucide-react"
 
